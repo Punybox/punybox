@@ -1,0 +1,15 @@
+macro(pp_config config_name default_value config_type config_description is_required)
+	if("${${config_name}}" STREQUAL "")
+		set(${config_name} ${default_value} CACHE ${config_type} "${config_description}")
+	endif()
+	separate_arguments(${config_name})
+	set(_val ${${config_name}})
+	set(${config_name} ${val} CACHE ${config_type} "${config_description}")
+	if(${is_required} AND "${_val}" STREQUAL "")
+		message(FATAL_ERROR "ERROR: no value was provided for ${config_name}")
+	endif()
+	message(STATUS "Config ${config_name} (${config_description}) is set to \"${_val}\"")
+	target_compile_definitions(pp_configs INTERFACE ${config_name})
+endmacro()
+
+
